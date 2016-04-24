@@ -2,14 +2,14 @@ var Cylon = require("cylon");
 
 Cylon.robot({
 	connections: {
-		raspi: { adaptor: 'raspi' }
+		raspi: {adaptor: "raspi", port: "/dev/ttyACM0"}
 	},
 
 	devices: {
-		led: { driver: 'led', pin: 12 }
+		led: {driver: "led", pin: 11}
 	},
 
 	work: function(my) {
-		every((1).second(), my.led.toggle);
+		every((1).seconds(), my.led.toggle);
 	}
 }).start();
