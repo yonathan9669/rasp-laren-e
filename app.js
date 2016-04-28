@@ -1,15 +1,33 @@
+"use strict";
+
 var Cylon = require("cylon");
 
+Cylon.api({
+	host: "0.0.0.0",
+	port: "8080"
+});
+
 Cylon.robot({
+	name: 'motorcito',
+
 	connections: {
 		raspi: {adaptor: "raspi", port: "/dev/ttyACM0"}
 	},
 
 	devices: {
-		led: {driver: "led", pin: 11}
+		motor: {driver: 'motor', pin: 3}
 	},
 
 	work: function(my) {
-		every((1).seconds(), my.led.toggle);
+		every((3).seconds(), function() {
+			console.log('Motor Speed:' + my.motor.currentSpeed());
+		})
+	},
+
+	toggleMotor: function(my) {
+		my.motor.toggle();
 	}
-}).start();
+
+});
+
+Cylon.start();
