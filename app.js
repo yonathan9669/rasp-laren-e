@@ -1,5 +1,3 @@
-"use strict";
-
 var Cylon = require("cylon");
 
 Cylon.api({
@@ -8,24 +6,40 @@ Cylon.api({
 });
 
 Cylon.robot({
-	name: 'motorcito',
+	name: 'raspLarenE',
 
 	connections: {
 		raspi: {adaptor: "raspi", port: "/dev/ttyACM0"}
 	},
 
 	devices: {
-		motor: {driver: 'motor', pin: 3}
+		motorF: {driver: 'motor', pin: 11},
+		motorB: {driver: 'motor', pin: 15},
+		directionL: {driver: 'motor', pin: 12},
+		directionR: {driver: 'motor', pin: 16}
 	},
 
 	work: function(my) {
-		every((3).seconds(), function() {
-			console.log('Motor Speed:' + my.motor.currentSpeed());
-		})
+		my.motorF.turnOn();
+		my.directionL.turnOn();
+
+		every((5).seconds(function() {
+			my.motorF.toggle();
+			my.motorB.toggle();
+
+			my.directionL.toggle();
+			my.directionR.toggle();
+		}));
 	},
 
 	toggleMotor: function(my) {
-		my.motor.toggle();
+		this.motor.toggle(function(err, value) {
+			if (err) console.error(err);
+
+			console.log('Motor TOGGLE:' + value);
+		});
+
+		return my;
 	}
 
 });
