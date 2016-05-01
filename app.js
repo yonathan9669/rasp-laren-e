@@ -11,37 +11,39 @@ Cylon.robot({
 	connections: {
 		raspi: {adaptor: "raspi", port: "/dev/ttyACM0"}
 	},
-
+	
 	devices: {
-		motorF: {driver: 'motor', pin: 11},
-		motorB: {driver: 'motor', pin: 15},
-		directionL: {driver: 'motor', pin: 12},
-		directionR: {driver: 'motor', pin: 16}
+		motorF: {driver: 'led', pin: 29},
+		motorB: {driver: 'led', pin: 31},
+		directionL: {driver: 'led', pin: 18},
+		directionR: {driver: 'led', pin: 22}
 	},
 
 	work: function(my) {
+		var i = 0;
 		my.motorF.turnOn();
 		my.directionL.turnOn();
-
-		every((5).seconds(function() {
-			my.motorF.toggle();
-			my.motorB.toggle();
-
-			my.directionL.toggle();
-			my.directionR.toggle();
-		}));
 	},
 
-	toggleMotor: function(my) {
-		this.motor.toggle(function(err, value) {
-			if (err) console.error(err);
+	toggleMotor: function() {
+		this.motorF.toggle();
+		this.motorB.toggle();
 
-			console.log('Motor TOGGLE:' + value);
-		});
+		console.log('Motor Forward:' + this.motorF.currentBrightness());
+		console.log('Motor Backward:' + this.motorB.currentBrightness());
 
-		return my;
+		return {forward: this.motorF, backward: this.motorB};
+	},
+
+	toggleDirection: function() {
+		this.directionL.toggle();
+		this.directionR.toggle();
+
+		console.log('Direction Left:' + this.directionL.currentBrightness());
+		console.log('Direction Right:' + this.directionR.currentBrightness());
+
+		return {left: this.directionL, right: this.directionR};
 	}
-
 });
 
 Cylon.start();
