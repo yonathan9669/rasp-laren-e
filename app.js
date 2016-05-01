@@ -1,4 +1,18 @@
 var Cylon = require("cylon");
+var self = this;
+
+//Private Options
+var _setDirection = function(on, off, name, going) {
+	off.turnOff();
+	on.turnOn();
+
+	console.log(name + ' going ' + going + ': ' + on.currentSpeed());
+};
+
+var _stop = function(one, two) {
+	one.turnOff();
+	two.turnOff();
+};
 
 Cylon.api({
 	host: "0.0.0.0",
@@ -11,36 +25,67 @@ Cylon.robot({
 	connections: {
 		raspi: {adaptor: "raspi", port: "/dev/ttyACM0"}
 	},
-	
+
 	devices: {
-		motorF: {driver: 'led', pin: 29},
-		motorB: {driver: 'led', pin: 31},
-		directionL: {driver: 'led', pin: 18},
-		directionR: {driver: 'led', pin: 22}
+		motorF: {driver: 'motor', pin: 29},
+		motorB: {driver: 'motor', pin: 31},
+		directionL: {driver: 'motor', pin: 18},
+		directionR: {driver: 'motor', pin: 22}
 	},
 
-	work: function(my) {
-		var i = 0;
-		my.motorF.turnOn();
-		my.directionL.turnOn();
+	work: function() {
+	},
+
+	//Engine Options
+	goForward: function() {
+		self._setDirection(this.motorF, this.motorB, 'Motor', 'Forward');
+
+		return this.motorF;
+	},
+
+	goBackward: function() {
+		self._setDirection(this.motorB, this.motorF, 'Motor', 'Backward');
+
+		return this.motorB;
+	},
+
+	stopMotor: function() {
+		self._stop(this.motorF, this.motorB);
 	},
 
 	toggleMotor: function() {
 		this.motorF.toggle();
 		this.motorB.toggle();
 
-		console.log('Motor Forward:' + this.motorF.currentBrightness());
-		console.log('Motor Backward:' + this.motorB.currentBrightness());
+		console.log('Motor Forward:' + this.motorF.currentSpeed());
+		console.log('Motor Backward:' + this.motorB.currentSpeed());
 
 		return {forward: this.motorF, backward: this.motorB};
+	},
+
+	//Direction Options
+	goLeft: function() {
+		self._setDirection(this.directionL, this.directionR, 'Direction', 'Left');
+
+		return this.directionL;
+	},
+
+	goRight: function() {
+		self._setDirection(this.directionR, this.directionL, 'Direction', 'Right');
+
+		return this.directionR;
+	},
+
+	stopDirection: function() {
+		self._stop(this.directionL, this.directionR);
 	},
 
 	toggleDirection: function() {
 		this.directionL.toggle();
 		this.directionR.toggle();
 
-		console.log('Direction Left:' + this.directionL.currentBrightness());
-		console.log('Direction Right:' + this.directionR.currentBrightness());
+		console.log('Direction Left:' + this.directionL.currentSpeed());
+		console.log('Direction Right:' + this.directionR.currentSpeed());
 
 		return {left: this.directionL, right: this.directionR};
 	}
