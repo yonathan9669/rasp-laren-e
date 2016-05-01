@@ -1,18 +1,4 @@
 var Cylon = require("cylon");
-var self = this;
-
-//Private Options
-var _setDirection = function(on, off, name, going) {
-	off.turnOff();
-	on.turnOn();
-
-	console.log(name + ' going ' + going + ': ' + on.currentSpeed());
-};
-
-var _stop = function(one, two) {
-	one.turnOff();
-	two.turnOff();
-};
 
 Cylon.api({
 	host: "0.0.0.0",
@@ -38,19 +24,19 @@ Cylon.robot({
 
 	//Engine Options
 	goForward: function() {
-		self._setDirection(this.motorF, this.motorB, 'Motor', 'Forward');
+		this._setDirection(this.motorF, this.motorB, 'Motor', 'Forward');
 
 		return this.motorF;
 	},
 
 	goBackward: function() {
-		self._setDirection(this.motorB, this.motorF, 'Motor', 'Backward');
+		this._setDirection(this.motorB, this.motorF, 'Motor', 'Backward');
 
 		return this.motorB;
 	},
 
 	stopMotor: function() {
-		self._stop(this.motorF, this.motorB);
+		this._stop(this.motorF, this.motorB);
 	},
 
 	toggleMotor: function() {
@@ -65,19 +51,19 @@ Cylon.robot({
 
 	//Direction Options
 	goLeft: function() {
-		self._setDirection(this.directionL, this.directionR, 'Direction', 'Left');
+		this._setDirection(this.directionL, this.directionR, 'Direction', 'Left');
 
 		return this.directionL;
 	},
 
 	goRight: function() {
-		self._setDirection(this.directionR, this.directionL, 'Direction', 'Right');
+		this._setDirection(this.directionR, this.directionL, 'Direction', 'Right');
 
 		return this.directionR;
 	},
 
 	stopDirection: function() {
-		self._stop(this.directionL, this.directionR);
+		this._stop(this.directionL, this.directionR);
 	},
 
 	toggleDirection: function() {
@@ -88,6 +74,19 @@ Cylon.robot({
 		console.log('Direction Right:' + this.directionR.currentSpeed());
 
 		return {left: this.directionL, right: this.directionR};
+	},
+
+	//Private Options
+	_setDirection: function(on, off, name, going) {
+		off.turnOff();
+		on.turnOn();
+
+		console.log(name + ' going ' + going + ': ' + on.currentSpeed());
+	},
+
+	_stop: function(one, two) {
+		one.turnOff();
+		two.turnOff();
 	}
 });
 
