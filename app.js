@@ -4,7 +4,7 @@ Cylon.api("http", {
 	ssl: false,
 	host: "0.0.0.0",
 	port: "8080",
-	serveDir: './web'
+	serveDir: __dirname + '/web'
 });
 
 Cylon.robot({
