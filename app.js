@@ -1,8 +1,10 @@
 var Cylon = require("cylon");
 
-Cylon.api({
+Cylon.api("http", {
+	ssl: false,
 	host: "0.0.0.0",
-	port: "8080"
+	port: "8080",
+	serveDir: './web'
 });
 
 Cylon.robot({
@@ -24,29 +26,19 @@ Cylon.robot({
 
 	//Engine Options
 	goForward: function() {
-		this._setDirection(this.motorF, this.motorB, 'Motor', 'Forward');
+		this._setDirection(this.motorF, this.motorB, 'Engine', 'Forward');
 
 		return this.motorF;
 	},
 
 	goBackward: function() {
-		this._setDirection(this.motorB, this.motorF, 'Motor', 'Backward');
+		this._setDirection(this.motorB, this.motorF, 'Engine', 'Backward');
 
 		return this.motorB;
 	},
 
 	stopMotor: function() {
-		this._stop(this.motorF, this.motorB);
-	},
-
-	toggleMotor: function() {
-		this.motorF.toggle();
-		this.motorB.toggle();
-
-		console.log('Motor Forward:' + this.motorF.currentSpeed());
-		console.log('Motor Backward:' + this.motorB.currentSpeed());
-
-		return {forward: this.motorF, backward: this.motorB};
+		this._stop(this.motorF, this.motorB, 'Engine');
 	},
 
 	//Direction Options
@@ -63,30 +55,32 @@ Cylon.robot({
 	},
 
 	stopDirection: function() {
-		this._stop(this.directionL, this.directionR);
-	},
-
-	toggleDirection: function() {
-		this.directionL.toggle();
-		this.directionR.toggle();
-
-		console.log('Direction Left:' + this.directionL.currentSpeed());
-		console.log('Direction Right:' + this.directionR.currentSpeed());
-
-		return {left: this.directionL, right: this.directionR};
+		this._stop(this.directionL, this.directionR, 'Direction');
 	},
 
 	//Private Options
 	_setDirection: function(on, off, name, going) {
-		off.turnOff();
-		on.turnOn();
+		try {
+			off.turnOff();
+			on.turnOn();
 
-		console.log(name + ' going ' + going + ': ' + on.currentSpeed());
+			console.log(name + ' going ' + going + ': ' + on.currentSpeed());
+		}
+		catch (ex) {
+			console.error(ex);
+		}
 	},
 
-	_stop: function(one, two) {
-		one.turnOff();
-		two.turnOff();
+	_stop: function(one, two, name) {
+		try {
+			one.turnOff();
+			two.turnOff();
+
+			console.log(name + ' STOP');
+		}
+		catch (ex) {
+			console.error(ex);
+		}
 	}
 });
 
